@@ -3,10 +3,10 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 env = os.environ
 
-db_user = env.get("DBUSER")
+db_user = env.get("DBUSER", "rick")
 db_pass = env.get("DBPASS")
 db_host = env.get("DBHOST", "localhost")
-db_name = env.get("DBNAME")
+db_name = env.get("DBNAME", "petals")
 
 
 class Config(object):
