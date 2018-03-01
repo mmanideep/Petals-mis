@@ -20,6 +20,14 @@ class BaseModel(db.Model):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise Exception(e)
+
 
 class InventoryItem(BaseModel):
     __tablename__ = "inventory_item"
@@ -69,8 +77,9 @@ class PurchaseLog(BaseModel):
             db.session.add(inv_obj)
             db.session.add(self)
             return db.session.commit()
-        except Exception:
+        except Exception as e:
             db.session.rollback()
+            raise Exception(e)
 
     def destroy(self):
         try:
@@ -79,8 +88,9 @@ class PurchaseLog(BaseModel):
             db.session.add(inv_obj)
             db.session.delete(self)
             return db.session.commit()
-        except Exception:
+        except Exception as e:
             db.session.rollback()
+            raise Exception(e)
 
 
 class SellLog(BaseModel):
@@ -101,8 +111,9 @@ class SellLog(BaseModel):
                 db.session.add(inv_obj)
             db.session.add(self)
             return db.session.commit()
-        except Exception:
+        except Exception as e:
             db.session.rollback()
+            raise Exception(e)
 
     def destroy(self):
         try:
@@ -115,8 +126,9 @@ class SellLog(BaseModel):
                 db.session.add(inv_obj)
             db.session.delete(self)
             return db.session.commit()
-        except Exception:
+        except Exception as e:
             db.session.rollback()
+            raise Exception(e)
 
 
 class User(BaseModel):
@@ -139,3 +151,4 @@ class User(BaseModel):
             db.session.commit()
         except Exception as e:
             db.session.rollback()
+            raise Exception(e)
