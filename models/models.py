@@ -28,6 +28,14 @@ class BaseModel(db.Model):
             db.session.rollback()
             raise Exception(e)
 
+    def destroy(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise Exception(e)
+
 
 class InventoryItem(BaseModel):
     __tablename__ = "inventory_item"
