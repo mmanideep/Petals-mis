@@ -1,4 +1,6 @@
 import os
+from datetime import timedelta
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 env = os.environ
@@ -14,6 +16,7 @@ class Config(object):
     CSRF_ENABLED = True
     SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2cffi://%s:%s@%s/%s" % (db_user, db_pass, db_host, db_name)
     SECRET_KEY = ""
+    JWT_EXPIRATION_DELTA = timedelta(seconds=604800)
 
 
 class DevConfig(Config):
