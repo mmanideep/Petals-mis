@@ -1,6 +1,7 @@
 from flask.views import MethodView
 from flask import request, jsonify
 from flask import abort
+from flask_jwt import current_identity
 
 from petals_mis.app import db
 
@@ -18,6 +19,9 @@ class CrudResource(MethodView):
             response_objs = db.session.query(self._model).filter_by(**request.args).all()
         else:
             response_objs = db.session.query(self._model).filter().all()
+        get_priority = getattr(self, "priority").get("GET")
+        if get_priority and current_identity.priority < get_priority:
+            return jsonify({"payload": {}, "message": "Restricted access"})
         response_dict = [
             {key: value for key, value in obj.as_dict().items() if key not in self._private_attrs}
             for obj in response_objs]
@@ -26,6 +30,9 @@ class CrudResource(MethodView):
     def post(self, **kwargs):
         if "POST" not in self._allowed_methods:
             return abort(404)
+        get_priority = getattr(self, "priority").get("POST")
+        if get_priority and current_identity.priority < get_priority:
+            return jsonify({"payload": {}, "message": "Restricted access"})
         obj = self._model(**request.json)
         status = 200
         try:
@@ -42,6 +49,9 @@ class CrudResource(MethodView):
             return abort(404)
         if not request.json.get("id"):
             return jsonify({"payload": {}, "message": "id has to be passed as a param"}), 400
+        get_priority = getattr(self, "priority").get("DELETE")
+        if get_priority and current_identity.priority < get_priority:
+            return jsonify({"payload": {}, "message": "Restricted access"})
         try:
             model_obj = db.session.query(self._model).filter(self._model.id == request.json["id"]).first()
             model_obj.destroy()
@@ -54,6 +64,9 @@ class CrudResource(MethodView):
             return abort(404)
         if not request.json.get("id"):
             return jsonify({"payload": {}, "message": "id has to be passed as a param"}), 400
+        get_priority = getattr(self, "priority").get("PUT")
+        if get_priority and current_identity.priority < get_priority:
+            return jsonify({"payload": {}, "message": "Restricted access"})
         restricted_updates_on = ["created_at", "updated_at", "id"] + self._restrict_updates
         updatable_attrs = [
             key for key in self._model.__table__.columns.keys() if key not in restricted_updates_on]

@@ -1,1 +1,4 @@
-INVENTORY_TYPES = ["flower", "packing_item"]
+MANAGER = 80
+ADMIN = 100
+USER = 10
+INACTIVE_USER = 1
