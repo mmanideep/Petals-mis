@@ -40,3 +40,5 @@ for api in export_api_list:
     app.add_url_rule(
         "/{}".format(api_url),
         view_func=view)
+
+from petals_mis.views.index import index_view
