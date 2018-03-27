@@ -1,11 +1,15 @@
+import os
 import hashlib
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_jwt import JWT
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+TEMPLATES = os.path.join(basedir, "static")
+STATIC = os.path.join(basedir, "static/dist")
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=STATIC, template_folder=TEMPLATES)
 app.config.from_object('petals_mis.config.DevConfig')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
